@@ -60,7 +60,7 @@ class CDoJIRA(object):
 
         #_fields = 'project, issuetype, parent, components, summary, customfield_10547, fixVersions, duedate, timetracking, assignee, customfield_10531'
         # _fields = 'project, issuetype, parent, components, summary, customfield_10547, fixVersions, duedate, timetracking, assignee, customfield_10531, description, labels, key'
-        _fields = 'project, issuetype, summary, customfield_10305, customfield_10835, assignee, customfield_10306, customfield_10121, description, customfield_10118, customfield_10115, customfield_13702, customfield_14001, customfield_10122, labels, comment'
+        _fields = 'project, issuetype, summary, customfield_10305, customfield_10835, assignee, customfield_10306, customfield_10121, description, customfield_10118, customfield_10115, customfield_13702, customfield_14001, customfield_10122, labels, comment, status'
 
         if _jql is not None:
             issues = self._m_JIRA.search_issues(_jql, fields=_fields, maxResults=1000)
@@ -79,6 +79,14 @@ class CDoJIRA(object):
         #_dictIssue = {'project': {'key': 'MSM'}, 'issuetype': {'name': 'Sub-task'}, 'parent': {'key': 'MSM-413'}, 'components': [{'name': 'HMI'}], 'summary': 'Test for online jira import8899', 'customfield_10547': '2020-08-17 00:00:00', 'fixVersions': [{'name': 'C101'}], 'duedate': '2020-08-30 00:00:00', 'timetracking': {'originalEstimate': '10d'}, 'assignee': {'name': 'zhao_x3'}, 'customfield_10531': {'value': 'Test'}, 'description':'test13', 'labels':['FeinSpec']}
         return self._m_JIRA.create_issue(fields=_dictIssue)
 
+    def transition_issue(self, _issue, _status, _fields):
+        return self._m_JIRA.transition_issue(_issue, _status, fields=_fields)
+
+    def assign_issue(self, _issue, _assign):
+        return self._m_JIRA.assign_issue(_issue, _assign)
+
+    def add_comment(self, _issue, _comments):
+        return self._m_JIRA.add_comment(_issue, _comments)
 
 
 

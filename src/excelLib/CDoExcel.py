@@ -1,5 +1,7 @@
 import time
 import openpyxl
+from openpyxl.styles import PatternFill
+
 from src.const._const import _const
 from src.bean.TaskBean import TaskBean
 
@@ -26,6 +28,10 @@ class CDoExcel(object):
     _const.KEY = 16
     _const.COMMENTS = 17
     _const.OSS_CVEID = 14
+    _const.OSS_INFLUENCE = 25
+    _const.OSS_JIRAURL = 26
+    _const.OSS_JIRASTATUS = 27
+    _const.OSS_AffectedSW = 28
     _const.OSS_COMMENTS = 29
     _const.OSS_COMPONENT = 4
 
@@ -128,15 +134,23 @@ class CDoExcel(object):
 
         return tb.getDataDict(_jiarHndl)
 
-    def setCommentsData(self, _index, _searchlist):
+    def setJIRA2OSSData(self, _index, _searchlist):
         oss_cveid = self.__m_sheet.cell(_index, _const.OSS_CVEID).value
         oss_component = self.__m_sheet.cell(_index, _const.OSS_COMPONENT).value
         for searchinfo in _searchlist:
             cveid = searchinfo.get('cveid')
             component = searchinfo.get('component')
+            status = searchinfo.get('status')
             print(oss_component, component)
-            if cveid in oss_cveid and oss_component in component:
+            if cveid == oss_cveid and oss_component in component:
                 self.__m_sheet.cell(_index, _const.OSS_COMMENTS).value = searchinfo.get('comments')
+                self.__m_sheet.cell(_index, _const.OSS_JIRAURL).value = "https://jira.jnd.joynext.com/browse/" + searchinfo.get('jiranum')
+                self.__m_sheet.cell(_index, _const.OSS_JIRASTATUS).value = status
+                self.__m_sheet.cell(_index, _const.OSS_AffectedSW).value = searchinfo.get('AffectedSW')
+                if searchinfo.get('influence') == 'Y' and  ( self.__m_sheet.cell(_index, _const.OSS_INFLUENCE).value is None or  self.__m_sheet.cell(_index, _const.OSS_INFLUENCE).value != 'Y'):
+                    fille = PatternFill("solid", fgColor="00FF00")
+                    self.__m_sheet.cell(_index, _const.OSS_INFLUENCE).fill = fille
+                self.__m_sheet.cell(_index, _const.OSS_INFLUENCE).value = searchinfo.get('influence')
                 break
 
 
